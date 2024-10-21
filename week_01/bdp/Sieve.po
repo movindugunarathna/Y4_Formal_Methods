@@ -1,0 +1,32 @@
+THEORY ProofList IS
+_f(1) & _f(2) & _f(6) & _f(7) & WellDefinedness_nextPrime.4,(_f(11) & _f(12) => _f(15));
+_f(1) & _f(2) & _f(6) & _f(7) & WellDefinedness_nextPrime.3,(_f(11) & _f(12) => _f(14));
+_f(1) & _f(2) & _f(6) & _f(7) & WellDefinedness_nextPrime.2,(_f(11) & _f(12) => _f(13));
+_f(1) & _f(2) & _f(6) & _f(7) & WellDefinedness_nextPrime.1,(_f(12) => _f(13));
+_f(1) & _f(2) & _f(6) & _f(7) & Operation_nextPrime.3,(_f(3) => _f(10));
+_f(1) & _f(2) & _f(6) & _f(7) & Operation_nextPrime.2,(_f(3) => _f(9));
+_f(1) & _f(2) & _f(6) & _f(7) & Operation_nextPrime.1,(_f(3) => _f(8));
+_f(1) & _f(2) & Initialisation.2,(_f(3) => _f(5));
+_f(1) & _f(2) & Initialisation.1,(_f(3) => _f(4))
+END
+&
+THEORY Formulas IS
+((NAT) = (((0) .. (2147483647)))) & ((INT) = (((-2147483647) .. (2147483647))));
+((maxNumber) : (NAT)) & ((maxNumber) = (10));
+"Invariant is preserved";
+((2) .. (maxNumber)) : POW( NAT);
+((((((2) .. (maxNumber))) /\ ({}))) = ({}));
+sieve : POW( NAT) & primes : POW( NAT) & ((((sieve) /\ (primes))) = ({}));
+not(((sieve) = ({})));
+SET(nn).(((nn) : (sieve)) & not(((((nn) mod (min(sieve)))) = (0)))) : POW( NAT);
+((primes) \/ (({min(sieve)}))) : POW( NAT);
+((((SET(nn).(((nn) : (sieve)) & not(((((nn) mod (min(sieve)))) = (0))))) /\ (((primes) \/ (({min(sieve)})))))) = ({}));
+((nn) : (sieve));
+"Operation is well defined";
+((((sieve) /\ ((INTEGER - NATURAL)))) : (FIN(INTEGER)));
+(0 <= nn);
+(1 <= min(sieve))
+END
+&
+THEORY EnumerateX
+END

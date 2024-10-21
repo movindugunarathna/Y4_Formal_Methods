@@ -1,0 +1,6 @@
+digraph {
+FamilyMeeting [ label=" FamilyMeeting " shape= box ]
+PaperRound [ label=" PaperRound " shape= box ]
+Sieve [ label=" Sieve " shape= box ]
+
+}

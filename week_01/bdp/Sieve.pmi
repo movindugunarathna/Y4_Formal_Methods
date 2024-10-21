@@ -1,0 +1,49 @@
+THEORY BalanceX IS
+Sieve,9,0,0,0,0,0,0;
+Initialisation,2,0,0,0,0,0,0;
+Operation_nextPrime,3,0,0,0,0,0,0;
+WellDefinedness_nextPrime,4,0,0,0,0,0,0
+END
+&
+THEORY ProofState IS
+Unproved;
+Unproved;
+Unproved;
+Unproved;
+Unproved;
+Unproved;
+Unproved;
+Unproved;
+Unproved
+END
+&
+THEORY MethodList IS
+?;
+?;
+?;
+?;
+?;
+?;
+?;
+?;
+?
+END
+&
+THEORY PassList IS
+Force(0),?;
+Force(0),?;
+Force(0),?;
+Force(0),?;
+Force(0),?;
+Force(0),?;
+Force(0),?;
+Force(0),?;
+Force(0),?
+END
+&
+THEORY Status IS
+Sieve,9,0,0,0,0,0;
+Initialisation,2,0,0,0,0,0;
+Operation_nextPrime,3,0,0,0,0,0;
+WellDefinedness_nextPrime,4,0,0,0,0,0
+END
