@@ -37,9 +37,9 @@ THEORY ListVariablesX IS
   External_Context_List_Variables(Machine(NoughtsCrosses))==(?);
   Context_List_Variables(Machine(NoughtsCrosses))==(?);
   Abstract_List_Variables(Machine(NoughtsCrosses))==(?);
-  Local_List_Variables(Machine(NoughtsCrosses))==(crosses,noughts);
-  List_Variables(Machine(NoughtsCrosses))==(crosses,noughts);
-  External_List_Variables(Machine(NoughtsCrosses))==(crosses,noughts)
+  Local_List_Variables(Machine(NoughtsCrosses))==(turn,currentOutcome,crosses,noughts);
+  List_Variables(Machine(NoughtsCrosses))==(turn,currentOutcome,crosses,noughts);
+  External_List_Variables(Machine(NoughtsCrosses))==(turn,currentOutcome,crosses,noughts)
 END
 &
 THEORY ListVisibleVariablesX IS
@@ -57,7 +57,7 @@ THEORY ListInvariantX IS
   Expanded_List_Invariant(Machine(NoughtsCrosses))==(btrue);
   Abstract_List_Invariant(Machine(NoughtsCrosses))==(btrue);
   Context_List_Invariant(Machine(NoughtsCrosses))==(btrue);
-  List_Invariant(Machine(NoughtsCrosses))==(noughts <: Grid & crosses <: Grid & noughts/\crosses = {})
+  List_Invariant(Machine(NoughtsCrosses))==(noughts <: Grid & crosses <: Grid & noughts/\crosses = {} & currentOutcome: STATES & turn: Players)
 END
 &
 THEORY ListAssertionsX IS
@@ -76,9 +76,9 @@ THEORY ListExclusivityX IS
 END
 &
 THEORY ListInitialisationX IS
-  Expanded_List_Initialisation(Machine(NoughtsCrosses))==(noughts,crosses:={},{});
+  Expanded_List_Initialisation(Machine(NoughtsCrosses))==(noughts,crosses,currentOutcome,turn:={},{},Ongoing,Noughts);
   Context_List_Initialisation(Machine(NoughtsCrosses))==(skip);
-  List_Initialisation(Machine(NoughtsCrosses))==(noughts:={} || crosses:={})
+  List_Initialisation(Machine(NoughtsCrosses))==(noughts:={} || crosses:={} || currentOutcome:=Ongoing || turn:=Noughts)
 END
 &
 THEORY ListParametersX IS
@@ -115,15 +115,15 @@ END
 THEORY ListOperationGuardX END
 &
 THEORY ListPreconditionX IS
-  List_Precondition(Machine(NoughtsCrosses),placeNought)==(pp: Grid);
-  List_Precondition(Machine(NoughtsCrosses),placeCross)==(pp: Grid)
+  List_Precondition(Machine(NoughtsCrosses),placeNought)==(pp: Grid & turn = Noughts);
+  List_Precondition(Machine(NoughtsCrosses),placeCross)==(pp: Grid & turn = Crosses)
 END
 &
 THEORY ListSubstitutionX IS
-  Expanded_List_Substitution(Machine(NoughtsCrosses),placeCross)==(pp: Grid | pp: noughts\/crosses ==> res:=Failure [] not(pp: noughts\/crosses) ==> crosses,res:=crosses\/{pp},Success);
-  Expanded_List_Substitution(Machine(NoughtsCrosses),placeNought)==(pp: Grid | pp: noughts\/crosses ==> res:=Failure [] not(pp: noughts\/crosses) ==> noughts,res:=noughts\/{pp},Success);
-  List_Substitution(Machine(NoughtsCrosses),placeNought)==(IF pp: noughts\/crosses THEN res:=Failure ELSE noughts:=noughts\/{pp} || res:=Success END);
-  List_Substitution(Machine(NoughtsCrosses),placeCross)==(IF pp: noughts\/crosses THEN res:=Failure ELSE crosses:=crosses\/{pp} || res:=Success END)
+  Expanded_List_Substitution(Machine(NoughtsCrosses),placeCross)==(pp: Grid & turn = Crosses | pp: noughts\/crosses ==> res:=Failure [] not(pp: noughts\/crosses) ==> crosses,currentOutcome,turn,res:=crosses\/{pp},Crosses_win,Noughts,Success);
+  Expanded_List_Substitution(Machine(NoughtsCrosses),placeNought)==(pp: Grid & turn = Noughts | pp: noughts\/crosses ==> res:=Failure [] not(pp: noughts\/crosses) ==> noughts,currentOutcome,turn,res:=noughts\/{pp},Noughts_win,Crosses,Success);
+  List_Substitution(Machine(NoughtsCrosses),placeNought)==(IF pp: noughts\/crosses THEN res:=Failure ELSE noughts:=noughts\/{pp} || currentOutcome:=Noughts_win || turn:=Crosses || res:=Success END);
+  List_Substitution(Machine(NoughtsCrosses),placeCross)==(IF pp: noughts\/crosses THEN res:=Failure ELSE crosses:=crosses\/{pp} || currentOutcome:=Crosses_win || turn:=Noughts || res:=Success END)
 END
 &
 THEORY ListConstantsX IS
@@ -141,10 +141,11 @@ THEORY ListSetsX IS
   Inherited_List_Enumerated(Machine(NoughtsCrosses))==(?);
   Inherited_List_Defered(Machine(NoughtsCrosses))==(?);
   Inherited_List_Sets(Machine(NoughtsCrosses))==(?);
-  List_Enumerated(Machine(NoughtsCrosses))==(Players,Results);
+  List_Enumerated(Machine(NoughtsCrosses))==(Players,Results,STATES);
   List_Defered(Machine(NoughtsCrosses))==(?);
-  List_Sets(Machine(NoughtsCrosses))==(Players,Results);
-  Set_Definition(Machine(NoughtsCrosses),Results)==({Success,Failure})
+  List_Sets(Machine(NoughtsCrosses))==(Players,Results,STATES);
+  Set_Definition(Machine(NoughtsCrosses),Results)==({Success,Failure});
+  Set_Definition(Machine(NoughtsCrosses),STATES)==({Noughts_win,Crosses_win,Draw,Ongoing})
 END
 &
 THEORY ListHiddenConstantsX IS
@@ -158,7 +159,7 @@ THEORY ListPropertiesX IS
   Abstract_List_Properties(Machine(NoughtsCrosses))==(btrue);
   Context_List_Properties(Machine(NoughtsCrosses))==(btrue);
   Inherited_List_Properties(Machine(NoughtsCrosses))==(btrue);
-  List_Properties(Machine(NoughtsCrosses))==(Grid = (1..3)*(1..3) & winningSubsets <: POW(Grid) & winningSubsets = {{1}*(1..3),{2}*(1..3),{3}*(1..3),(1..3)*{1},(1..3)*{2},(1..3)*{3},id(1..3),{1|->3,2|->2,3|->1}} & Players: FIN(INTEGER) & not(Players = {}) & Results: FIN(INTEGER) & not(Results = {}))
+  List_Properties(Machine(NoughtsCrosses))==(Grid = (1..3)*(1..3) & winningSubsets <: POW(Grid) & winningSubsets = {{1}*(1..3),{2}*(1..3),{3}*(1..3),(1..3)*{1},(1..3)*{2},(1..3)*{3},id(1..3),{1|->3,2|->2,3|->1}} & Players: FIN(INTEGER) & not(Players = {}) & Results: FIN(INTEGER) & not(Results = {}) & STATES: FIN(INTEGER) & not(STATES = {}))
 END
 &
 THEORY ListSeenInfoX END
@@ -169,7 +170,7 @@ THEORY ListANYVarX IS
 END
 &
 THEORY ListOfIdsX IS
-  List_Of_Ids(Machine(NoughtsCrosses)) == (Grid,winningSubsets,Players,Results,Noughts,Crosses,Success,Failure | ? | crosses,noughts | ? | placeNought,placeCross | ? | ? | ? | NoughtsCrosses);
+  List_Of_Ids(Machine(NoughtsCrosses)) == (Grid,winningSubsets,Players,Results,STATES,Noughts,Crosses,Success,Failure,Noughts_win,Crosses_win,Draw,Ongoing | ? | turn,currentOutcome,crosses,noughts | ? | placeNought,placeCross | ? | ? | ? | NoughtsCrosses);
   List_Of_HiddenCst_Ids(Machine(NoughtsCrosses)) == (? | ?);
   List_Of_VisibleCst_Ids(Machine(NoughtsCrosses)) == (Grid,winningSubsets);
   List_Of_VisibleVar_Ids(Machine(NoughtsCrosses)) == (? | ?);
@@ -177,15 +178,15 @@ THEORY ListOfIdsX IS
 END
 &
 THEORY SetsEnvX IS
-  Sets(Machine(NoughtsCrosses)) == (Type(Players) == Cst(SetOf(etype(Players,0,1)));Type(Results) == Cst(SetOf(etype(Results,0,1))))
+  Sets(Machine(NoughtsCrosses)) == (Type(Players) == Cst(SetOf(etype(Players,0,1)));Type(Results) == Cst(SetOf(etype(Results,0,1)));Type(STATES) == Cst(SetOf(etype(STATES,0,3))))
 END
 &
 THEORY ConstantsEnvX IS
-  Constants(Machine(NoughtsCrosses)) == (Type(Noughts) == Cst(etype(Players,0,1));Type(Crosses) == Cst(etype(Players,0,1));Type(Success) == Cst(etype(Results,0,1));Type(Failure) == Cst(etype(Results,0,1));Type(Grid) == Cst(SetOf(btype(INTEGER,?,?)*btype(INTEGER,?,?)));Type(winningSubsets) == Cst(SetOf(SetOf(btype(INTEGER,?,?)*btype(INTEGER,?,?)))))
+  Constants(Machine(NoughtsCrosses)) == (Type(Noughts) == Cst(etype(Players,0,1));Type(Crosses) == Cst(etype(Players,0,1));Type(Success) == Cst(etype(Results,0,1));Type(Failure) == Cst(etype(Results,0,1));Type(Noughts_win) == Cst(etype(STATES,0,3));Type(Crosses_win) == Cst(etype(STATES,0,3));Type(Draw) == Cst(etype(STATES,0,3));Type(Ongoing) == Cst(etype(STATES,0,3));Type(Grid) == Cst(SetOf(btype(INTEGER,?,?)*btype(INTEGER,?,?)));Type(winningSubsets) == Cst(SetOf(SetOf(btype(INTEGER,?,?)*btype(INTEGER,?,?)))))
 END
 &
 THEORY VariablesEnvX IS
-  Variables(Machine(NoughtsCrosses)) == (Type(crosses) == Mvl(SetOf(btype(INTEGER,?,?)*btype(INTEGER,?,?)));Type(noughts) == Mvl(SetOf(btype(INTEGER,?,?)*btype(INTEGER,?,?))))
+  Variables(Machine(NoughtsCrosses)) == (Type(turn) == Mvl(etype(Players,?,?));Type(currentOutcome) == Mvl(etype(STATES,?,?));Type(crosses) == Mvl(SetOf(btype(INTEGER,?,?)*btype(INTEGER,?,?)));Type(noughts) == Mvl(SetOf(btype(INTEGER,?,?)*btype(INTEGER,?,?))))
 END
 &
 THEORY OperationsEnvX IS
