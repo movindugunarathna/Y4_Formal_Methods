@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<db_xml>
+    <atelierb version="3_7_ubuntu-cvs" />
+    <project decomp_dir="C:\Users\movin\AtelierB_Data\AtelierB_free_4.7.1\w1871486_Movindu_Gunarathna\bdp\expand_src" old_decomp_dir="C:\Users\movin\AtelierB_Data\AtelierB_free_4.7.1\w1871486_Movindu_Gunarathna\bdp\src">
+        <!-- Definition directory list -->
+        <!-- Proof mechanisms -->
+        <!-- Component file list -->
+        <component_file path="C:/Users/movin/AtelierB_Data/AtelierB_free_4.7.1/w1871486_Movindu_Gunarathna" name="BattleshipsBoard" suffix="mch" user="movin">
+            <component name="BattleshipsBoard" type="specification" />
+        </component_file>
+    </project>
+</db_xml>
